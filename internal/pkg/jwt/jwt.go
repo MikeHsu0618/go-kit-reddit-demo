@@ -6,6 +6,15 @@ import (
 	"time"
 )
 
+type JwtManager interface {
+	Generate(id uint64) (string, error)
+	Validate(tokenStr string) (*UserClaims, error)
+}
+
+type jwtManager struct {
+	config *Config
+}
+
 type UserClaims struct {
 	UserId uint64 `json:"user_id,omitempty"`
 	jwt.StandardClaims
@@ -14,15 +23,6 @@ type UserClaims struct {
 type Config struct {
 	Secret         string
 	ExpirationTime time.Duration
-}
-
-type JwtManager interface {
-	Generate(id uint64) (string, error)
-	Validate(tokenStr string) (*UserClaims, error)
-}
-
-type jwtManager struct {
-	config *Config
 }
 
 func NewJwtManager(config *Config) JwtManager {
@@ -35,7 +35,7 @@ func (j *jwtManager) Generate(id uint64) (string, error) {
 	tokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaims{
 		UserId: id,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(j.config.ExpirationTime).Unix(),
+			ExpiresAt: time.Now().Add(j.config.ExpirationTime * time.Second).Unix(),
 		},
 	})
 	return tokenObj.SignedString([]byte(j.config.Secret))
@@ -54,24 +54,12 @@ func (j *jwtManager) Validate(tokenStr string) (*UserClaims, error) {
 		},
 	)
 	if err != nil {
-		return nil, fmt.Errorf("parse token error")
-	}
-
-	if !token.Valid {
-		if ve, ok := err.(*jwt.ValidationError); ok {
-			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				return nil, fmt.Errorf("invalid token error")
-			}
-			if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-				return nil, fmt.Errorf("token expired or not avaliable")
-			}
-		}
-		return nil, fmt.Errorf("invalid token error")
+		return &UserClaims{}, fmt.Errorf("parse token error %v", err)
 	}
 
 	claims, ok := token.Claims.(*UserClaims)
 	if !ok {
-		return nil, fmt.Errorf("invalid token")
+		return &UserClaims{}, fmt.Errorf("invalid token")
 	}
 
 	return claims, nil
