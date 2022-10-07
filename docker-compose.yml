@@ -1,0 +1,74 @@
+version: "3.8"
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: auth/Dockerfile
+    restart: always
+    volumes:
+      - .:/go/src//Users/mikehsu/Desktop/go_project/go-kit-reddit-demo/internal
+    container_name: auth
+    ports:
+      - 8801:8081
+  post:
+    build:
+      context: .
+      dockerfile: post/Dockerfile
+    restart: always
+    volumes:
+      - .:/go/src//Users/mikehsu/Desktop/go_project/go-kit-reddit-demo/internal
+    container_name: post
+    ports:
+      - 8800:8081
+  user:
+    build:
+      context: .
+      dockerfile: user/Dockerfile
+    restart: always
+    volumes:
+      - .:/go/src//Users/mikehsu/Desktop/go_project/go-kit-reddit-demo/internal
+    container_name: user
+    ports:
+      - 8802:8081
+
+
+  user-db:
+    container_name: user-db
+    image: postgres:12.4-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=user
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - 'postgresql_user:/var/lib/postgresql/data/pgdata'
+
+  post-db:
+    container_name: post-db
+    image: postgres:12.4-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=post
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    restart: always
+    networks:
+      - backend
+    volumes:
+      - 'postgresql_post:/var/lib/postgresql/data/pgdata'
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgresql_user:
+  postgresql_post:
+    driver: local
