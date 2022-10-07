@@ -36,9 +36,9 @@ func (l loggingMiddleware) CreatePost(ctx context.Context, title string, content
 	}()
 	return l.next.CreatePost(ctx, title, content, userId)
 }
-func (l loggingMiddleware) ListPost(ctx context.Context, userId uint64) (posts []*entity.Post, err error) {
+func (l loggingMiddleware) ListPost(ctx context.Context) (posts []*entity.Post, err error) {
 	defer func() {
 		l.logger.Log("method", "ListPost", "posts", posts, "err", err)
 	}()
-	return l.next.ListPost(ctx, userId)
+	return l.next.ListPost(ctx)
 }

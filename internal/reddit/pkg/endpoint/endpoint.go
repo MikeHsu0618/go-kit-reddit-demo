@@ -70,9 +70,7 @@ func (r CreatePostResponse) Failed() error {
 }
 
 // ListPostRequest collects the request parameters for the ListPost method.
-type ListPostRequest struct {
-	UserId uint64 `json:"user_id"`
-}
+type ListPostRequest struct{}
 
 // ListPostResponse collects the response parameters for the ListPost method.
 type ListPostResponse struct {
@@ -83,8 +81,7 @@ type ListPostResponse struct {
 // MakeListPostEndpoint returns an endpoint that invokes ListPost on the service.
 func MakeListPostEndpoint(s service.RedditService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(ListPostRequest)
-		posts, err := s.ListPost(ctx, req.UserId)
+		posts, err := s.ListPost(ctx)
 		return ListPostResponse{
 			Err:   err,
 			Posts: posts,
@@ -133,9 +130,7 @@ func (e Endpoints) CreatePost(ctx context.Context, title string, content string,
 
 // ListPost implements Service. Primarily useful in a client.
 func (e Endpoints) ListPost(ctx context.Context, userId uint64) (posts []*entity.Post, err error) {
-	request := ListPostRequest{
-		UserId: userId,
-	}
+	request := ListPostRequest{}
 	response, err := e.ListPostEndpoint(ctx, request)
 	if err != nil {
 		return

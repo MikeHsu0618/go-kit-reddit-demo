@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	endpoint "go-kit-reddit-demo/internal/post/pkg/endpoint"
 	http1 "net/http"
 	"strconv"
@@ -83,7 +82,7 @@ func makeListByIdHandler(m *mux.Router, endpoints endpoint.Endpoints, options []
 
 func decodeListByIdRequest(_ context.Context, r *http1.Request) (interface{}, error) {
 	req := endpoint.ListByIdRequest{}
-	fmt.Println(r.URL.String())
+
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
 		return nil, err

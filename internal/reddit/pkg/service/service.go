@@ -15,7 +15,7 @@ import (
 type RedditService interface {
 	Login(ctx context.Context, username string, password string) (user *user.User, token string, err error)
 	CreatePost(ctx context.Context, title string, content string, userId uint64) (post *post.Post, err error)
-	ListPost(ctx context.Context, userId uint64) (posts []*post.Post, err error)
+	ListPost(ctx context.Context) (posts []*post.Post, err error)
 }
 
 type basicRedditService struct {
@@ -45,7 +45,7 @@ func (b *basicRedditService) CreatePost(ctx context.Context, title string, conte
 	}
 	return nil, Forbidden
 }
-func (b *basicRedditService) ListPost(ctx context.Context, userId uint64) (posts []*post.Post, err error) {
+func (b *basicRedditService) ListPost(ctx context.Context) (posts []*post.Post, err error) {
 	token := ctx.Value("token")
 	if token == nil {
 		return nil, Forbidden
@@ -54,10 +54,7 @@ func (b *basicRedditService) ListPost(ctx context.Context, userId uint64) (posts
 	if err != nil {
 		return nil, err
 	}
-	if userId == 0 {
-		return b.postClient.List(ctx)
-	}
-	return b.postClient.ListById(ctx, userId)
+	return b.postClient.List(ctx)
 }
 
 // NewBasicRedditService returns a naive, stateless implementation of RedditService.

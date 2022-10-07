@@ -4,13 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	http "github.com/go-kit/kit/transport/http"
 	handlers "github.com/gorilla/handlers"
 	mux "github.com/gorilla/mux"
 	endpoint "go-kit-reddit-demo/internal/reddit/pkg/endpoint"
 	http1 "net/http"
-	"strconv"
 )
 
 // makeLoginHandler creates the handler logic
@@ -78,22 +76,7 @@ func makeListPostHandler(m *mux.Router, endpoints endpoint.Endpoints, options []
 // decodeListPostRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeListPostRequest(ctx context.Context, r *http1.Request) (interface{}, error) {
-	userId := r.URL.Query().Get("user_id")
-	fmt.Println(userId)
-	if len(userId) > 0 {
-		fmt.Println(userId)
-		if uId, err := strconv.ParseInt(userId, 10, 64); err == nil {
-			fmt.Println(uint64(uId))
-			fmt.Printf("%T, %v", uId, uId)
-			return endpoint.ListPostRequest{
-				UserId: uint64(uId),
-			}, nil
-		}
-	}
-
-	return endpoint.ListPostRequest{
-		UserId: 0,
-	}, nil
+	return endpoint.ListPostRequest{}, nil
 }
 
 // encodeListPostResponse is a transport/http.EncodeResponseFunc that encodes
