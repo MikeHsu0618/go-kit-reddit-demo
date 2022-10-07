@@ -1,37 +1,38 @@
 package service
 
-import "context"
+import (
+	"context"
+	"go-kit-reddit-demo/internal/pkg/jwt"
+)
 
-// AuthService describes the service.
 type AuthService interface {
-	GenerateToken(ctx context.Context, id int) (res string, err error)
-	ValidateToken(ctx context.Context, id int) (res string, err error)
-	RefreshToken(ctx context.Context, id int) (res string, err error)
+	GenerateToken(ctx context.Context, id uint64) (token string, err error)
+	ValidateToken(ctx context.Context, token string) (claims *jwt.UserClaims, err error)
 }
 
-type basicAuthService struct{}
+type basicAuthService struct {
+	jwtManager jwt.JwtManager
+}
 
-func (b *basicAuthService) GenerateToken(ctx context.Context, id int) (res string, err error) {
-	res = "1233"
-	return res, err
+func (b *basicAuthService) GenerateToken(ctx context.Context, id uint64) (token string, err error) {
+	return b.jwtManager.Generate(id)
 }
-func (b *basicAuthService) ValidateToken(ctx context.Context, id int) (res string, err error) {
-	// TODO implement the business logic of ValidateToken
-	return res, err
-}
-func (b *basicAuthService) RefreshToken(ctx context.Context, id int) (res string, err error) {
-	// TODO implement the business logic of RefreshToken
-	return res, err
+
+func (b *basicAuthService) ValidateToken(ctx context.Context, token string) (claims *jwt.UserClaims, err error) {
+
+	return b.jwtManager.Validate(token)
 }
 
 // NewBasicAuthService returns a naive, stateless implementation of AuthService.
-func NewBasicAuthService() AuthService {
-	return &basicAuthService{}
+func NewBasicAuthService(jwtManager jwt.JwtManager) AuthService {
+	return &basicAuthService{
+		jwtManager: jwtManager,
+	}
 }
 
 // New returns a AuthService with all of the expected middleware wired in.
-func New(middleware []Middleware) AuthService {
-	var svc AuthService = NewBasicAuthService()
+func New(middleware []Middleware, jwtManager jwt.JwtManager) AuthService {
+	var svc AuthService = NewBasicAuthService(jwtManager)
 	for _, m := range middleware {
 		svc = m(svc)
 	}

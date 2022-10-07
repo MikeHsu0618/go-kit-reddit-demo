@@ -2,8 +2,8 @@
 package endpoint
 
 import (
-	service "auth/pkg/service"
 	endpoint "github.com/go-kit/kit/endpoint"
+	service "go-kit-reddit-demo/internal/auth/pkg/service"
 )
 
 // Endpoints collects all of the endpoints that compose a profile service. It's
@@ -12,7 +12,6 @@ import (
 type Endpoints struct {
 	GenerateTokenEndpoint endpoint.Endpoint
 	ValidateTokenEndpoint endpoint.Endpoint
-	RefreshTokenEndpoint  endpoint.Endpoint
 }
 
 // New returns a Endpoints struct that wraps the provided service, and wires in all of the
@@ -20,7 +19,6 @@ type Endpoints struct {
 func New(s service.AuthService, mdw map[string][]endpoint.Middleware) Endpoints {
 	eps := Endpoints{
 		GenerateTokenEndpoint: MakeGenerateTokenEndpoint(s),
-		RefreshTokenEndpoint:  MakeRefreshTokenEndpoint(s),
 		ValidateTokenEndpoint: MakeValidateTokenEndpoint(s),
 	}
 	for _, m := range mdw["GenerateToken"] {
@@ -28,9 +26,6 @@ func New(s service.AuthService, mdw map[string][]endpoint.Middleware) Endpoints 
 	}
 	for _, m := range mdw["ValidateToken"] {
 		eps.ValidateTokenEndpoint = m(eps.ValidateTokenEndpoint)
-	}
-	for _, m := range mdw["RefreshToken"] {
-		eps.RefreshTokenEndpoint = m(eps.RefreshTokenEndpoint)
 	}
 	return eps
 }
