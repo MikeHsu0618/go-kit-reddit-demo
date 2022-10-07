@@ -7,6 +7,7 @@ import (
 	endpoint1 "github.com/go-kit/kit/endpoint"
 	log "github.com/go-kit/kit/log"
 	prometheus "github.com/go-kit/kit/metrics/prometheus"
+	httptransport "github.com/go-kit/kit/transport/http"
 	lightsteptracergo "github.com/lightstep/lightstep-tracer-go"
 	group "github.com/oklog/oklog/pkg/group"
 	opentracinggo "github.com/opentracing/opentracing-go"
@@ -21,6 +22,7 @@ import (
 	http1 "go-kit-reddit-demo/internal/reddit/pkg/http"
 	service "go-kit-reddit-demo/internal/reddit/pkg/service"
 	userHttp "go-kit-reddit-demo/internal/user/client/http"
+
 	"net"
 	http2 "net/http"
 	"os"
@@ -113,7 +115,16 @@ func Run() {
 func initHttpHandler(endpoints endpoint.Endpoints, g *group.Group) {
 	options := defaultHttpOptions(logger, tracer)
 	// Add your http options here
-
+	addOptions := []httptransport.ServerOption{
+		// add Jwt Token to context
+		httptransport.ServerBefore(func(ctx context.Context, r *http2.Request) context.Context {
+			ctx = context.WithValue(ctx, "token", r.Header.Get("Authorization"))
+			return ctx
+		}),
+	}
+	for i, option := range options {
+		options[i] = append(option, addOptions...)
+	}
 	httpHandler := http1.NewHTTPHandler(endpoints, options)
 	httpListener, err := net.Listen("tcp", *httpAddr)
 	if err != nil {
@@ -131,7 +142,6 @@ func getServiceMiddleware(logger log.Logger) (mw []service.Middleware) {
 	mw = []service.Middleware{}
 	mw = addDefaultServiceMiddleware(logger, mw)
 	// Append your middleware here
-	mw = append(mw, service.ValidateTokenMiddleware(logger))
 	return
 }
 func getEndpointMiddleware(logger log.Logger) (mw map[string][]endpoint1.Middleware) {

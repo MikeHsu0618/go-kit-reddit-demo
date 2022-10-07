@@ -21,9 +21,6 @@ func makeLoginHandler(m *mux.Router, endpoints endpoint.Endpoints, options []htt
 // decodeLoginRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeLoginRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	//bearerToken := r.Header.Get("Authorization")
-	//token := strings.Split(bearerToken, " ")[1]
-
 	req := endpoint.LoginRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
@@ -43,12 +40,19 @@ func encodeLoginResponse(ctx context.Context, w http1.ResponseWriter, response i
 
 // makeCreatePostHandler creates the handler logic
 func makeCreatePostHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
-	m.Methods("POST").Path("/create-post").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.CreatePostEndpoint, decodeCreatePostRequest, encodeCreatePostResponse, options...)))
+	m.Methods("POST").Path("/create-post").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"POST"}),
+			handlers.AllowedOrigins([]string{"*"}))(http.NewServer(
+			endpoints.CreatePostEndpoint,
+			decodeCreatePostRequest,
+			encodeCreatePostResponse, options...,
+		)))
 }
 
 // decodeCreatePostRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
-func decodeCreatePostRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+func decodeCreatePostRequest(ctx context.Context, r *http1.Request) (interface{}, error) {
 	req := endpoint.CreatePostRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
@@ -68,7 +72,7 @@ func encodeCreatePostResponse(ctx context.Context, w http1.ResponseWriter, respo
 
 // makeListPostHandler creates the handler logic
 func makeListPostHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
-	m.Methods("GET").Path("/list-post").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.ListPostEndpoint, decodeListPostRequest, encodeListPostResponse, options...)))
+	m.Methods("GET").Path("/list-post").Handler(handlers.CORS(handlers.AllowedMethods([]string{"GET"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.ListPostEndpoint, decodeListPostRequest, encodeListPostResponse, options...)))
 }
 
 // decodeListPostRequest is a transport/http.DecodeRequestFunc that decodes a

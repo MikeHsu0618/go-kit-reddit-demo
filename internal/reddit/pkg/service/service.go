@@ -5,6 +5,7 @@ import (
 	authSvc "go-kit-reddit-demo/internal/auth/pkg/service"
 	postSvc "go-kit-reddit-demo/internal/post/pkg/service"
 	userSvc "go-kit-reddit-demo/internal/user/pkg/service"
+	"strings"
 
 	post "go-kit-reddit-demo/internal/post/pkg/entity"
 	user "go-kit-reddit-demo/internal/user/pkg/entity"
@@ -35,9 +36,24 @@ func (b *basicRedditService) Login(ctx context.Context, username string, passwor
 	return user, token, err
 }
 func (b *basicRedditService) CreatePost(ctx context.Context, title string, content string, userId uint64) (post *post.Post, err error) {
-	return b.postClient.Create(ctx, title, content, userId)
+	if token := ctx.Value("token"); token != nil {
+		_, err = b.authClient.ValidateToken(ctx, strings.Split(token.(string), " ")[1])
+		if err != nil {
+			return nil, err
+		}
+		return b.postClient.Create(ctx, title, content, userId)
+	}
+	return nil, Forbidden
 }
 func (b *basicRedditService) ListPost(ctx context.Context, userId uint64) (posts []*post.Post, err error) {
+	token := ctx.Value("token")
+	if token == nil {
+		return nil, Forbidden
+	}
+	_, err = b.authClient.ValidateToken(ctx, strings.Split(token.(string), " ")[1])
+	if err != nil {
+		return nil, err
+	}
 	if userId == 0 {
 		return b.postClient.List(ctx)
 	}
