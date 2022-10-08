@@ -8,8 +8,8 @@ import (
 	logger2 "go-kit-reddit-demo/internal/pkg/logger"
 	postHttp "go-kit-reddit-demo/internal/post/client/http"
 	"go-kit-reddit-demo/internal/reddit/endpoint"
-	http1 "go-kit-reddit-demo/internal/reddit/http"
-	"go-kit-reddit-demo/internal/reddit/transport/service"
+	service2 "go-kit-reddit-demo/internal/reddit/service"
+	http1 "go-kit-reddit-demo/internal/reddit/transport/http"
 	userHttp "go-kit-reddit-demo/internal/user/client/http"
 
 	endpoint1 "github.com/go-kit/kit/endpoint"
@@ -49,7 +49,7 @@ func Run() {
 		logger.Log("err", err)
 		os.Exit(1)
 	}
-	svc := service.New(getServiceMiddleware(logger), authClient, userClient, postClient)
+	svc := service2.New(getServiceMiddleware(logger), authClient, userClient, postClient)
 	eps := endpoint.New(svc, getEndpointMiddleware(logger))
 	g := createService(eps)
 	initCancelInterrupt(g)
@@ -82,8 +82,8 @@ func initHttpHandler(endpoints endpoint.Endpoints, g *group.Group) {
 	})
 
 }
-func getServiceMiddleware(logger log.Logger) (mw []service.Middleware) {
-	mw = []service.Middleware{}
+func getServiceMiddleware(logger log.Logger) (mw []service2.Middleware) {
+	mw = []service2.Middleware{}
 	mw = addDefaultServiceMiddleware(logger, mw)
 	// Append your middleware here
 	return

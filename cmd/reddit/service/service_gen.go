@@ -8,8 +8,8 @@ import (
 	http "github.com/go-kit/kit/transport/http"
 	group "github.com/oklog/oklog/pkg/group"
 	endpoint2 "go-kit-reddit-demo/internal/reddit/endpoint"
-	http1 "go-kit-reddit-demo/internal/reddit/http"
-	"go-kit-reddit-demo/internal/reddit/transport/service"
+	"go-kit-reddit-demo/internal/reddit/service"
+	http1 "go-kit-reddit-demo/internal/reddit/transport/http"
 )
 
 func createService(endpoints endpoint2.Endpoints) (g *group.Group) {

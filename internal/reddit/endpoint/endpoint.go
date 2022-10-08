@@ -5,7 +5,7 @@ import (
 	endpoint "github.com/go-kit/kit/endpoint"
 	"github.com/gookit/validate"
 	"go-kit-reddit-demo/internal/post/entity"
-	"go-kit-reddit-demo/internal/reddit/transport/service"
+	"go-kit-reddit-demo/internal/reddit/service"
 	user "go-kit-reddit-demo/internal/user/entity"
 )
 
