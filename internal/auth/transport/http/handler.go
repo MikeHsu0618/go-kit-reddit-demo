@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	endpoint2 "go-kit-reddit-demo/internal/auth/endpoint"
 	http1 "net/http"
 
@@ -12,6 +11,7 @@ import (
 	mux "github.com/gorilla/mux"
 )
 
+// makeGenerateTokenHandler
 func makeGenerateTokenHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/generate-token").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.GenerateTokenEndpoint, decodeGenerateTokenRequest, encodeGenerateTokenResponse, options...)))
 }
@@ -32,27 +32,7 @@ func encodeGenerateTokenResponse(ctx context.Context, w http1.ResponseWriter, re
 	return
 }
 
-func ErrorEncoder(_ context.Context, err error, w http1.ResponseWriter) {
-	w.WriteHeader(err2code(err))
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(errorWrapper{Error: err.Error()})
-}
-func ErrorDecoder(r *http1.Response) error {
-	var w errorWrapper
-	if err := json.NewDecoder(r.Body).Decode(&w); err != nil {
-		return err
-	}
-	return errors.New(w.Error)
-}
-
-func err2code(err error) int {
-	return http1.StatusInternalServerError
-}
-
-type errorWrapper struct {
-	Error string `json:"error"`
-}
-
+// makeValidateTokenHandler
 func makeValidateTokenHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/validate-token").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.ValidateTokenEndpoint, decodeValidateTokenRequest, encodeValidateTokenResponse, options...)))
 }
