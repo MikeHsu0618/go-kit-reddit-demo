@@ -9,18 +9,6 @@ import (
 	endpoint "github.com/go-kit/kit/endpoint"
 )
 
-// CreateRequest collects the request parameters for the Create method.
-type CreateRequest struct {
-	Username string `json:"username"`
-	Pwd      string `json:"pwd"`
-}
-
-// CreateResponse collects the response parameters for the Create method.
-type CreateResponse struct {
-	Res string `json:"res"`
-	Err error  `json:"err"`
-}
-
 // MakeCreateEndpoint returns an endpoint that invokes Create on the service.
 func MakeCreateEndpoint(s service.UserService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
@@ -31,23 +19,6 @@ func MakeCreateEndpoint(s service.UserService) endpoint.Endpoint {
 			Res: res,
 		}, nil
 	}
-}
-
-// Failed implements Failer.
-func (r CreateResponse) Failed() error {
-	return r.Err
-}
-
-// LoginRequest collects the request parameters for the Login method.
-type LoginRequest struct {
-	Username string `json:"username" validate:"required"`
-	Pwd      string `json:"pwd" validate:"required"`
-}
-
-// LoginResponse collects the response parameters for the Login method.
-type LoginResponse struct {
-	User *entity.User `json:"user"`
-	Err  error        `json:"err"`
 }
 
 // MakeLoginEndpoint returns an endpoint that invokes Login on the service.
@@ -66,19 +37,6 @@ func MakeLoginEndpoint(s service.UserService) endpoint.Endpoint {
 	}
 }
 
-// Failed implements Failer.
-func (r LoginResponse) Failed() error {
-	return r.Err
-}
-
-// Failure is an interface that should be implemented by response types.
-// Response encoders can check if responses are Failer, and if so they've
-// failed, and if so encode them using a separate write path based on the error.
-type Failure interface {
-	Failed() error
-}
-
-// Create implements Service. Primarily useful in a client.
 func (e Endpoints) Create(ctx context.Context, username string, pwd string) (res string, err error) {
 	request := CreateRequest{
 		Pwd:      pwd,
@@ -91,7 +49,6 @@ func (e Endpoints) Create(ctx context.Context, username string, pwd string) (res
 	return response.(CreateResponse).Res, response.(CreateResponse).Err
 }
 
-// Login implements Service. Primarily useful in a client.
 func (e Endpoints) Login(ctx context.Context, username string, pwd string) (user *entity.User, err error) {
 	request := LoginRequest{
 		Pwd:      pwd,
