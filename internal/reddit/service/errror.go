@@ -3,5 +3,5 @@ package service
 import "errors"
 
 var (
-	Forbidden = errors.New("forbidden")
+	ErrForbidden = errors.New("forbidden")
 )

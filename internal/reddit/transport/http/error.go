@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"go-kit-reddit-demo/internal/reddit/service"
 	http1 "net/http"
 )
 
@@ -21,7 +22,11 @@ func ErrorDecoder(r *http1.Response) error {
 }
 
 func err2code(err error) int {
-	return http1.StatusInternalServerError
+	switch err {
+	case service.ErrForbidden:
+		return http1.StatusForbidden
+	}
+	return http1.StatusBadRequest
 }
 
 type errorWrapper struct {

@@ -47,14 +47,14 @@ func (b *basicRedditService) Register(ctx context.Context, username string, pass
 func (b *basicRedditService) CreatePost(ctx context.Context, title string, content string, userId uint64) (post *post.Post, err error) {
 	token := ctx.Value("token")
 	if token == "" {
-		return nil, Forbidden
+		return nil, ErrForbidden
 	}
 	return b.postClient.Create(ctx, title, content, userId)
 }
 func (b *basicRedditService) ListPost(ctx context.Context) (posts []*post.Post, err error) {
 	token := ctx.Value("token")
 	if token == nil {
-		return nil, Forbidden
+		return nil, ErrForbidden
 	}
 	_, err = b.authClient.ValidateToken(ctx, strings.Split(token.(string), " ")[1])
 	if err != nil {
