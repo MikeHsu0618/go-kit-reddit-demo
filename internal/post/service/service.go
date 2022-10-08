@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"go-kit-reddit-demo/internal/post/pkg/entity"
-	"go-kit-reddit-demo/internal/post/pkg/repository"
+	"go-kit-reddit-demo/internal/post/entity"
+	"go-kit-reddit-demo/internal/post/repository"
 
 	"github.com/google/uuid"
 )

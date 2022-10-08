@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	endpoint "go-kit-reddit-demo/internal/post/pkg/endpoint"
+	endpoint2 "go-kit-reddit-demo/internal/post/endpoint"
 	http1 "net/http"
 	"strconv"
 
@@ -13,18 +13,18 @@ import (
 	mux "github.com/gorilla/mux"
 )
 
-func makeCreateHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeCreateHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/create").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.CreateEndpoint, decodeCreateRequest, encodeCreateResponse, options...)))
 }
 
 func decodeCreateRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.CreateRequest{}
+	req := endpoint2.CreateRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
 }
 
 func encodeCreateResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}
@@ -33,7 +33,7 @@ func encodeCreateResponse(ctx context.Context, w http1.ResponseWriter, response 
 	return
 }
 
-func makeListHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeListHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").
 		Path("/list").
 		Handler(
@@ -43,12 +43,12 @@ func makeListHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http
 }
 
 func decodeListRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.ListRequest{}
+	req := endpoint2.ListRequest{}
 	return req, nil
 }
 
 func encodeListResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}
@@ -76,12 +76,12 @@ type errorWrapper struct {
 	Error string `json:"error"`
 }
 
-func makeListByIdHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeListByIdHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/list-by-id").Handler(handlers.CORS(handlers.AllowedMethods([]string{"GET"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.ListByIdEndpoint, decodeListByIdRequest, encodeListByIdResponse, options...)))
 }
 
 func decodeListByIdRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.ListByIdRequest{}
+	req := endpoint2.ListByIdRequest{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
@@ -92,7 +92,7 @@ func decodeListByIdRequest(_ context.Context, r *http1.Request) (interface{}, er
 }
 
 func encodeListByIdResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}

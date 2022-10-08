@@ -2,8 +2,8 @@ package endpoint
 
 import (
 	"context"
-	"go-kit-reddit-demo/internal/post/pkg/entity"
-	service "go-kit-reddit-demo/internal/post/pkg/service"
+	"go-kit-reddit-demo/internal/post/entity"
+	"go-kit-reddit-demo/internal/post/service"
 
 	endpoint "github.com/go-kit/kit/endpoint"
 	"github.com/gookit/validate"

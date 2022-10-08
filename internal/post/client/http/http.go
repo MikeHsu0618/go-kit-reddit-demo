@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	endpoint "github.com/go-kit/kit/endpoint"
 	http "github.com/go-kit/kit/transport/http"
-	endpoint1 "go-kit-reddit-demo/internal/post/pkg/endpoint"
-	http2 "go-kit-reddit-demo/internal/post/pkg/http"
-	service "go-kit-reddit-demo/internal/post/pkg/service"
+	endpoint2 "go-kit-reddit-demo/internal/post/endpoint"
+	"go-kit-reddit-demo/internal/post/service"
+	http2 "go-kit-reddit-demo/internal/post/transport/http"
 	"io/ioutil"
 	http1 "net/http"
 	"net/url"
@@ -41,7 +41,7 @@ func New(instance string, options map[string][]http.ClientOption) (service.PostS
 		listByIdEndpoint = http.NewClient("GET", copyURL(u, "/list-by-id"), encodeHTTPGenericRequest, decodeListByIdResponse, options["ListById"]...).Endpoint()
 	}
 
-	return endpoint1.Endpoints{
+	return endpoint2.Endpoints{
 		CreateEndpoint:   createEndpoint,
 		ListByIdEndpoint: listByIdEndpoint,
 		ListEndpoint:     listEndpoint,
@@ -68,7 +68,7 @@ func decodeCreateResponse(_ context.Context, r *http1.Response) (interface{}, er
 	if r.StatusCode != http1.StatusOK {
 		return nil, http2.ErrorDecoder(r)
 	}
-	var resp endpoint1.CreateResponse
+	var resp endpoint2.CreateResponse
 	err := json.NewDecoder(r.Body).Decode(&resp)
 	return resp, err
 }
@@ -81,7 +81,7 @@ func decodeListResponse(_ context.Context, r *http1.Response) (interface{}, erro
 	if r.StatusCode != http1.StatusOK {
 		return nil, http2.ErrorDecoder(r)
 	}
-	var resp endpoint1.ListResponse
+	var resp endpoint2.ListResponse
 	err := json.NewDecoder(r.Body).Decode(&resp)
 	return resp, err
 }
@@ -94,7 +94,7 @@ func decodeListByIdResponse(_ context.Context, r *http1.Response) (interface{}, 
 	if r.StatusCode != http1.StatusOK {
 		return nil, http2.ErrorDecoder(r)
 	}
-	var resp endpoint1.ListByIdResponse
+	var resp endpoint2.ListByIdResponse
 	err := json.NewDecoder(r.Body).Decode(&resp)
 	return resp, err
 }
