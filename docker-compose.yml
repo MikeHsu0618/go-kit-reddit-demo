@@ -3,34 +3,42 @@ services:
   auth:
     build:
       context: .
-      dockerfile: auth/Dockerfile
-    restart: always
-    volumes:
-      - .:/go/src//Users/mikehsu/Desktop/go_project/go-kit-reddit-demo/internal
+      dockerfile: ./deployments/docker/auth/dockerfile
     container_name: auth
     ports:
-      - 8801:8081
-  post:
-    build:
-      context: .
-      dockerfile: post/Dockerfile
-    restart: always
-    volumes:
-      - .:/go/src//Users/mikehsu/Desktop/go_project/go-kit-reddit-demo/internal
-    container_name: post
-    ports:
-      - 8800:8081
+      - 8081:8081
+    networks:
+      - backend
+
   user:
     build:
       context: .
-      dockerfile: user/Dockerfile
-    restart: always
-    volumes:
-      - .:/go/src//Users/mikehsu/Desktop/go_project/go-kit-reddit-demo/internal
+      dockerfile:  ./deployments/docker/user/dockerfile
     container_name: user
     ports:
-      - 8802:8081
+      - 8181:8181
+    networks:
+      - backend
 
+  post:
+    build:
+      context: .
+      dockerfile: ./deployments/docker/post/dockerfile
+    container_name: post
+    ports:
+      - 8281:8281
+    networks:
+      - backend
+
+  reddit:
+    build:
+      context: .
+      dockerfile:  ./deployments/docker/reddit/dockerfile
+    container_name: reddit
+    ports:
+      - 8381:8381
+    networks:
+      - backend
 
   user-db:
     container_name: user-db

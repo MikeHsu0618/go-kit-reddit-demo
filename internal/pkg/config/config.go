@@ -35,7 +35,7 @@ type Server struct {
 	Metrics Metrics
 }
 
-type Blog struct {
+type Reddit struct {
 	Server Server
 }
 
@@ -49,16 +49,7 @@ type Post struct {
 	Server Server
 }
 
-type Comment struct {
-	DB     DB
-	Server Server
-}
-
 type Auth struct {
-	Server Server
-}
-
-type DTM struct {
 	Server Server
 }
 
@@ -68,13 +59,11 @@ type JWT struct {
 }
 
 type Config struct {
-	Blog    Blog
-	User    User
-	Post    Post
-	Comment Comment
-	Auth    Auth
-	DTM     DTM
-	JWT     JWT
+	Reddit Reddit
+	User   User
+	Post   Post
+	Auth   Auth
+	JWT    JWT
 }
 
 func Load(path string) (*Config, error) {

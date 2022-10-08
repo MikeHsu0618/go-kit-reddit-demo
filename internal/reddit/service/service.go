@@ -49,6 +49,10 @@ func (b *basicRedditService) CreatePost(ctx context.Context, title string, conte
 	if token == "" {
 		return nil, ErrForbidden
 	}
+	_, err = b.authClient.ValidateToken(ctx, strings.Split(token.(string), " ")[1])
+	if err != nil {
+		return nil, err
+	}
 	return b.postClient.Create(ctx, title, content, userId)
 }
 func (b *basicRedditService) ListPost(ctx context.Context) (posts []*post.Post, err error) {

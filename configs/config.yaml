@@ -1,79 +1,39 @@
-blog:
+reddit:
   server:
-    name: "blog"
-    host: "blog-server"
-    grpc:
-      port: ":50050"
+    name: "reddit"
+    host: "reddit"
     http:
-      port: ":8050"
-    metrics:
-      port: ":9050"
-user:
-  db:
-    host: 'localhost'
-    port: '5432'
-    user: 'postgres'
-    password: 'postgres'
-    name: 'user'
-  server:
-    name: 'user'
-    host: 'user-server'
-    grpc:
-      port: ':50051'
-    http:
-      port: ':8051'
-    metrics:
-      port: ':9051'
-post:
-  db:
-    host: 'localhost'
-    port: '5433'
-    user: 'postgres'
-    password: 'postgres'
-    name: 'post'
-  server:
-    name: 'post'
-    host: 'post-server'
-    grpc:
-      port: ':50052'
-    http:
-      port: ':8052'
-    metrics:
-      port: ':9052'
-comment:
-  db:
-    host: 'db'
-    port: '5432'
-    user: 'postgres'
-    password: 'postgres'
-    name: 'comments'
-  server:
-    name: 'comment'
-    host: 'comment-server'
-    grpc:
-      port: ':50053'
-    http:
-      port: ':8053'
-    metrics:
-      port: ':9053'
+      port: ":8381"
 auth:
   server:
     name: 'auth'
-    host: 'auth-server'
-    grpc:
-      port: ':50054'
+    host: 'auth'
     http:
-      port: ':8054'
-    metrics:
-      port: ':9054'
-dtm:
+      port: ':8081'
+user:
+  db:
+    host: 'user-db'
+    port: '5432'
+    user: 'postgres'
+    password: 'postgres'
+    name: 'user'
   server:
-    name: 'dtm'
-    host: 'dtm-server'
-    grpc:
-      port: ':36790'
+    name: 'user'
+    host: 'user'
     http:
-      port: ':36789'
+      port: ':8181'
+post:
+  db:
+    host: 'post-db'
+    port: '5432'
+    user: 'postgres'
+    password: 'postgres'
+    name: 'post'
+  server:
+    name: 'post'
+    host: 'post'
+    http:
+      port: ':8281'
 jwt:
   secret: 'secret'
   expires: 36000

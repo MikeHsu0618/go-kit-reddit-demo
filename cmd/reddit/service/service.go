@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	authHttp "go-kit-reddit-demo/internal/auth/client/http"
+	"go-kit-reddit-demo/internal/pkg/config"
 	logger2 "go-kit-reddit-demo/internal/pkg/logger"
 	postHttp "go-kit-reddit-demo/internal/post/client/http"
 	"go-kit-reddit-demo/internal/reddit/endpoint"
@@ -31,20 +32,24 @@ var httpAddr = fs.String("http-addr", ":8381", "HTTP listen address")
 
 func Run() {
 	fs.Parse(os.Args[1:])
-
+	cfg, err := config.Load("")
+	if err != nil {
+		logger.Log("err", err)
+		os.Exit(1)
+	}
 	logger = logger2.NewLogger()
 
-	authClient, err := authHttp.New("localhost:8081", nil)
+	authClient, err := authHttp.New(cfg.Auth.Server.Host+cfg.Auth.Server.HTTP.Port, nil)
 	if err != nil {
 		logger.Log("err", err)
 		os.Exit(1)
 	}
-	userClient, err := userHttp.New("localhost:8181", nil)
+	userClient, err := userHttp.New(cfg.User.Server.Host+cfg.User.Server.HTTP.Port, nil)
 	if err != nil {
 		logger.Log("err", err)
 		os.Exit(1)
 	}
-	postClient, err := postHttp.New("localhost:8281", nil)
+	postClient, err := postHttp.New(cfg.Post.Server.Host+cfg.Post.Server.HTTP.Port, nil)
 	if err != nil {
 		logger.Log("err", err)
 		os.Exit(1)
