@@ -2,12 +2,11 @@ package endpoint
 
 import (
 	"context"
+	endpoint "github.com/go-kit/kit/endpoint"
 	"github.com/gookit/validate"
 	"go-kit-reddit-demo/internal/post/entity"
-	service "go-kit-reddit-demo/internal/reddit/pkg/service"
-	user "go-kit-reddit-demo/internal/user/pkg/entity"
-
-	endpoint "github.com/go-kit/kit/endpoint"
+	"go-kit-reddit-demo/internal/reddit/transport/service"
+	user "go-kit-reddit-demo/internal/user/entity"
 )
 
 type LoginRequest struct {

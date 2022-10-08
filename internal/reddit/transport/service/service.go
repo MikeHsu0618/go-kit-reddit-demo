@@ -2,13 +2,12 @@ package service
 
 import (
 	"context"
-	authSvc "go-kit-reddit-demo/internal/auth/pkg/service"
+	authSvc "go-kit-reddit-demo/internal/auth/service"
 	post "go-kit-reddit-demo/internal/post/entity"
 	postSvc "go-kit-reddit-demo/internal/post/service"
-	userSvc "go-kit-reddit-demo/internal/user/pkg/service"
+	user "go-kit-reddit-demo/internal/user/entity"
+	userSvc "go-kit-reddit-demo/internal/user/service"
 	"strings"
-
-	user "go-kit-reddit-demo/internal/user/pkg/entity"
 )
 
 // RedditService describes the service.

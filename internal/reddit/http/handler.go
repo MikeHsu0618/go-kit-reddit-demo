@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	endpoint "go-kit-reddit-demo/internal/reddit/pkg/endpoint"
+	endpoint2 "go-kit-reddit-demo/internal/reddit/endpoint"
 	http1 "net/http"
 
 	http "github.com/go-kit/kit/transport/http"
@@ -12,18 +12,18 @@ import (
 	mux "github.com/gorilla/mux"
 )
 
-func makeLoginHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeLoginHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/login").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.LoginEndpoint, decodeLoginRequest, encodeLoginResponse, options...)))
 }
 
 func decodeLoginRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.LoginRequest{}
+	req := endpoint2.LoginRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
 }
 
 func encodeLoginResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}
@@ -32,7 +32,7 @@ func encodeLoginResponse(ctx context.Context, w http1.ResponseWriter, response i
 	return
 }
 
-func makeCreatePostHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeCreatePostHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/create-post").Handler(
 		handlers.CORS(
 			handlers.AllowedMethods([]string{"POST"}),
@@ -44,13 +44,13 @@ func makeCreatePostHandler(m *mux.Router, endpoints endpoint.Endpoints, options 
 }
 
 func decodeCreatePostRequest(ctx context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.CreatePostRequest{}
+	req := endpoint2.CreatePostRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
 }
 
 func encodeCreatePostResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}
@@ -59,16 +59,16 @@ func encodeCreatePostResponse(ctx context.Context, w http1.ResponseWriter, respo
 	return
 }
 
-func makeListPostHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeListPostHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/list-post").Handler(handlers.CORS(handlers.AllowedMethods([]string{"GET"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.ListPostEndpoint, decodeListPostRequest, encodeListPostResponse, options...)))
 }
 
 func decodeListPostRequest(ctx context.Context, r *http1.Request) (interface{}, error) {
-	return endpoint.ListPostRequest{}, nil
+	return endpoint2.ListPostRequest{}, nil
 }
 
 func encodeListPostResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}
@@ -96,18 +96,18 @@ type errorWrapper struct {
 	Error string `json:"error"`
 }
 
-func makeRegisterHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeRegisterHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/register").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.RegisterEndpoint, decodeRegisterRequest, encodeRegisterResponse, options...)))
 }
 
 func decodeRegisterRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.RegisterRequest{}
+	req := endpoint2.RegisterRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
 }
 
 func encodeRegisterResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}
