@@ -2,7 +2,7 @@ package endpoint
 
 import (
 	"context"
-	service "go-kit-reddit-demo/internal/auth/pkg/service"
+	"go-kit-reddit-demo/internal/auth/service"
 	jwt "go-kit-reddit-demo/internal/pkg/jwt"
 
 	endpoint "github.com/go-kit/kit/endpoint"

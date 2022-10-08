@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	endpoint "github.com/go-kit/kit/endpoint"
 	http "github.com/go-kit/kit/transport/http"
-	endpoint1 "go-kit-reddit-demo/internal/auth/pkg/endpoint"
-	http2 "go-kit-reddit-demo/internal/auth/pkg/http"
-	service "go-kit-reddit-demo/internal/auth/pkg/service"
+	endpoint2 "go-kit-reddit-demo/internal/auth/endpoint"
+	"go-kit-reddit-demo/internal/auth/service"
+	http2 "go-kit-reddit-demo/internal/auth/transport/http"
 	"io/ioutil"
 	http1 "net/http"
 	"net/url"
@@ -36,7 +36,7 @@ func New(instance string, options map[string][]http.ClientOption) (service.AuthS
 		validateTokenEndpoint = http.NewClient("POST", copyURL(u, "/validate-token"), encodeHTTPGenericRequest, decodeValidateTokenResponse, options["ValidateToken"]...).Endpoint()
 	}
 
-	return endpoint1.Endpoints{
+	return endpoint2.Endpoints{
 		GenerateTokenEndpoint: generateTokenEndpoint,
 		ValidateTokenEndpoint: validateTokenEndpoint,
 	}, nil
@@ -62,7 +62,7 @@ func decodeGenerateTokenResponse(_ context.Context, r *http1.Response) (interfac
 	if r.StatusCode != http1.StatusOK {
 		return nil, http2.ErrorDecoder(r)
 	}
-	var resp endpoint1.GenerateTokenResponse
+	var resp endpoint2.GenerateTokenResponse
 	err := json.NewDecoder(r.Body).Decode(&resp)
 	return resp, err
 }
@@ -75,7 +75,7 @@ func decodeValidateTokenResponse(_ context.Context, r *http1.Response) (interfac
 	if r.StatusCode != http1.StatusOK {
 		return nil, http2.ErrorDecoder(r)
 	}
-	var resp endpoint1.ValidateTokenResponse
+	var resp endpoint2.ValidateTokenResponse
 	err := json.NewDecoder(r.Body).Decode(&resp)
 	return resp, err
 }

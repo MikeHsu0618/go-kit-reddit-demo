@@ -4,7 +4,7 @@ package http
 import (
 	http "github.com/go-kit/kit/transport/http"
 	mux "github.com/gorilla/mux"
-	endpoint "go-kit-reddit-demo/internal/auth/pkg/endpoint"
+	"go-kit-reddit-demo/internal/auth/endpoint"
 	http1 "net/http"
 )
 
