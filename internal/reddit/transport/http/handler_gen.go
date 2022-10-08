@@ -3,6 +3,7 @@ package http
 
 import (
 	http "github.com/go-kit/kit/transport/http"
+	"github.com/gorilla/handlers"
 	mux "github.com/gorilla/mux"
 	"go-kit-reddit-demo/internal/reddit/endpoint"
 	http1 "net/http"
@@ -16,5 +17,5 @@ func NewHTTPHandler(endpoints endpoint.Endpoints, options map[string][]http.Serv
 	makeRegisterHandler(m, endpoints, options["Register"])
 	makeCreatePostHandler(m, endpoints, options["CreatePost"])
 	makeListPostHandler(m, endpoints, options["ListPost"])
-	return m
+	return handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(m)
 }
