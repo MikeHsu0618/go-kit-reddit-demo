@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
-	log "github.com/go-kit/kit/log"
-	"go-kit-reddit-demo/internal/post/pkg/entity"
+	"go-kit-reddit-demo/internal/post/entity"
 	user "go-kit-reddit-demo/internal/user/pkg/entity"
+
+	log "github.com/go-kit/kit/log"
 )
 
 // Middleware describes a service middleware.
@@ -41,4 +42,11 @@ func (l loggingMiddleware) ListPost(ctx context.Context) (posts []*entity.Post, 
 		l.logger.Log("method", "ListPost", "posts", posts, "err", err)
 	}()
 	return l.next.ListPost(ctx)
+}
+
+func (l loggingMiddleware) Register(ctx context.Context, username string, password string) (user *user.User, token string, err error) {
+	defer func() {
+		l.logger.Log("method", "Register", "username", username, "password", password, "user", user, "token", token, "err", err)
+	}()
+	return l.next.Register(ctx, username, password)
 }

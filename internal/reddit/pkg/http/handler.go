@@ -4,28 +4,24 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	endpoint "go-kit-reddit-demo/internal/reddit/pkg/endpoint"
+	http1 "net/http"
+
 	http "github.com/go-kit/kit/transport/http"
 	handlers "github.com/gorilla/handlers"
 	mux "github.com/gorilla/mux"
-	endpoint "go-kit-reddit-demo/internal/reddit/pkg/endpoint"
-	http1 "net/http"
 )
 
-// makeLoginHandler creates the handler logic
 func makeLoginHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/login").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.LoginEndpoint, decodeLoginRequest, encodeLoginResponse, options...)))
 }
 
-// decodeLoginRequest is a transport/http.DecodeRequestFunc that decodes a
-// JSON-encoded request from the HTTP request body.
 func decodeLoginRequest(_ context.Context, r *http1.Request) (interface{}, error) {
 	req := endpoint.LoginRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
 }
 
-// encodeLoginResponse is a transport/http.EncodeResponseFunc that encodes
-// the response as JSON to the response writer
 func encodeLoginResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
 	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
@@ -36,7 +32,6 @@ func encodeLoginResponse(ctx context.Context, w http1.ResponseWriter, response i
 	return
 }
 
-// makeCreatePostHandler creates the handler logic
 func makeCreatePostHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/create-post").Handler(
 		handlers.CORS(
@@ -48,16 +43,12 @@ func makeCreatePostHandler(m *mux.Router, endpoints endpoint.Endpoints, options 
 		)))
 }
 
-// decodeCreatePostRequest is a transport/http.DecodeRequestFunc that decodes a
-// JSON-encoded request from the HTTP request body.
 func decodeCreatePostRequest(ctx context.Context, r *http1.Request) (interface{}, error) {
 	req := endpoint.CreatePostRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
 }
 
-// encodeCreatePostResponse is a transport/http.EncodeResponseFunc that encodes
-// the response as JSON to the response writer
 func encodeCreatePostResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
 	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
@@ -68,19 +59,14 @@ func encodeCreatePostResponse(ctx context.Context, w http1.ResponseWriter, respo
 	return
 }
 
-// makeListPostHandler creates the handler logic
 func makeListPostHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/list-post").Handler(handlers.CORS(handlers.AllowedMethods([]string{"GET"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.ListPostEndpoint, decodeListPostRequest, encodeListPostResponse, options...)))
 }
 
-// decodeListPostRequest is a transport/http.DecodeRequestFunc that decodes a
-// JSON-encoded request from the HTTP request body.
 func decodeListPostRequest(ctx context.Context, r *http1.Request) (interface{}, error) {
 	return endpoint.ListPostRequest{}, nil
 }
 
-// encodeListPostResponse is a transport/http.EncodeResponseFunc that encodes
-// the response as JSON to the response writer
 func encodeListPostResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
 	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
@@ -102,12 +88,30 @@ func ErrorDecoder(r *http1.Response) error {
 	return errors.New(w.Error)
 }
 
-// This is used to set the http status, see an example here :
-// https://github.com/go-kit/kit/blob/master/examples/addsvc/pkg/addtransport/http.go#L133
 func err2code(err error) int {
 	return http1.StatusInternalServerError
 }
 
 type errorWrapper struct {
 	Error string `json:"error"`
+}
+
+func makeRegisterHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("POST").Path("/register").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.RegisterEndpoint, decodeRegisterRequest, encodeRegisterResponse, options...)))
+}
+
+func decodeRegisterRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	req := endpoint.RegisterRequest{}
+	err := json.NewDecoder(r.Body).Decode(&req)
+	return req, err
+}
+
+func encodeRegisterResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
 }

@@ -11,6 +11,7 @@ import (
 // single parameter.
 type Endpoints struct {
 	LoginEndpoint      endpoint.Endpoint
+	RegisterEndpoint   endpoint.Endpoint
 	CreatePostEndpoint endpoint.Endpoint
 	ListPostEndpoint   endpoint.Endpoint
 }
@@ -22,9 +23,13 @@ func New(s service.RedditService, mdw map[string][]endpoint.Middleware) Endpoint
 		CreatePostEndpoint: MakeCreatePostEndpoint(s),
 		ListPostEndpoint:   MakeListPostEndpoint(s),
 		LoginEndpoint:      MakeLoginEndpoint(s),
+		RegisterEndpoint:   MakeRegisterEndpoint(s),
 	}
 	for _, m := range mdw["Login"] {
 		eps.LoginEndpoint = m(eps.LoginEndpoint)
+	}
+	for _, m := range mdw["Register"] {
+		eps.RegisterEndpoint = m(eps.RegisterEndpoint)
 	}
 	for _, m := range mdw["CreatePost"] {
 		eps.CreatePostEndpoint = m(eps.CreatePostEndpoint)
