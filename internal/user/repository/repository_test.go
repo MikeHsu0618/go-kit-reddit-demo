@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go-kit-reddit-demo/internal/pkg/config"
 	"go-kit-reddit-demo/internal/pkg/pg"
-	"go-kit-reddit-demo/internal/user/pkg/entity"
+	"go-kit-reddit-demo/internal/user/entity"
 	"math/rand"
 	"strconv"
 	"testing"

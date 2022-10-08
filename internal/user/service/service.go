@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"github.com/google/uuid"
-	"go-kit-reddit-demo/internal/user/pkg/entity"
-	"go-kit-reddit-demo/internal/user/pkg/repository"
+	"go-kit-reddit-demo/internal/user/entity"
+	"go-kit-reddit-demo/internal/user/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 

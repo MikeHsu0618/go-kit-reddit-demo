@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"go-kit-reddit-demo/internal/pkg/pg"
-	"go-kit-reddit-demo/internal/user/pkg/entity"
+	"go-kit-reddit-demo/internal/user/entity"
 )
 
 type UserRepository interface {

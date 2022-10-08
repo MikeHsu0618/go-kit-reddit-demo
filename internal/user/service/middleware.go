@@ -2,9 +2,8 @@ package service
 
 import (
 	"context"
-	"go-kit-reddit-demo/internal/user/pkg/entity"
-
 	log "github.com/go-kit/kit/log"
+	"go-kit-reddit-demo/internal/user/entity"
 )
 
 // Middleware describes a service middleware.

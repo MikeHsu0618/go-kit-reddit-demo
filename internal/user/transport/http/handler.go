@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	endpoint "go-kit-reddit-demo/internal/user/pkg/endpoint"
+	endpoint2 "go-kit-reddit-demo/internal/user/endpoint"
 	http1 "net/http"
 
 	http "github.com/go-kit/kit/transport/http"
@@ -13,14 +13,14 @@ import (
 )
 
 // makeCreateHandler creates the handler logic
-func makeCreateHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeCreateHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/create").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.CreateEndpoint, decodeCreateRequest, encodeCreateResponse, options...)))
 }
 
 // decodeCreateRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeCreateRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.CreateRequest{}
+	req := endpoint2.CreateRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
 }
@@ -28,7 +28,7 @@ func decodeCreateRequest(_ context.Context, r *http1.Request) (interface{}, erro
 // encodeCreateResponse is a transport/http.EncodeResponseFunc that encodes
 // the response as JSON to the response writer
 func encodeCreateResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}
@@ -38,14 +38,14 @@ func encodeCreateResponse(ctx context.Context, w http1.ResponseWriter, response 
 }
 
 // makeLoginHandler creates the handler logic
-func makeLoginHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+func makeLoginHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/login").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.LoginEndpoint, decodeLoginRequest, encodeLoginResponse, options...)))
 }
 
 // decodeLoginRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeLoginRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.LoginRequest{}
+	req := endpoint2.LoginRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	return req, err
 }
@@ -53,7 +53,7 @@ func decodeLoginRequest(_ context.Context, r *http1.Request) (interface{}, error
 // encodeLoginResponse is a transport/http.EncodeResponseFunc that encodes
 // the response as JSON to the response writer
 func encodeLoginResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
-	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+	if f, ok := response.(endpoint2.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
 	}
