@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	endpoint2 "go-kit-reddit-demo/internal/post/endpoint"
 	http1 "net/http"
 	"strconv"
@@ -13,6 +12,7 @@ import (
 	mux "github.com/gorilla/mux"
 )
 
+// makeCreateHandler
 func makeCreateHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/create").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.CreateEndpoint, decodeCreateRequest, encodeCreateResponse, options...)))
 }
@@ -33,6 +33,7 @@ func encodeCreateResponse(ctx context.Context, w http1.ResponseWriter, response 
 	return
 }
 
+// makeListHandler
 func makeListHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").
 		Path("/list").
@@ -56,26 +57,8 @@ func encodeListResponse(ctx context.Context, w http1.ResponseWriter, response in
 	err = json.NewEncoder(w).Encode(response)
 	return
 }
-func ErrorEncoder(_ context.Context, err error, w http1.ResponseWriter) {
-	w.WriteHeader(err2code(err))
-	json.NewEncoder(w).Encode(errorWrapper{Error: err.Error()})
-}
-func ErrorDecoder(r *http1.Response) error {
-	var w errorWrapper
-	if err := json.NewDecoder(r.Body).Decode(&w); err != nil {
-		return err
-	}
-	return errors.New(w.Error)
-}
 
-func err2code(err error) int {
-	return http1.StatusInternalServerError
-}
-
-type errorWrapper struct {
-	Error string `json:"error"`
-}
-
+// makeListByIdHandler
 func makeListByIdHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/list-by-id").Handler(handlers.CORS(handlers.AllowedMethods([]string{"GET"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.ListByIdEndpoint, decodeListByIdRequest, encodeListByIdResponse, options...)))
 }
