@@ -23,10 +23,6 @@ type CreateResponse struct {
 func MakeCreateEndpoint(s service.PostService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreateRequest)
-		v := validate.Struct(request)
-		if !v.Validate() {
-			return nil, v.Errors
-		}
 		res, err := s.Create(ctx, req.Title, req.Content, req.UserId)
 		return CreateResponse{
 			Err: err,
