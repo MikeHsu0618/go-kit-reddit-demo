@@ -19,6 +19,8 @@ services:
       - 8181:8181
     networks:
       - backend
+    depends_on:
+      - user-db
 
   post:
     build:
@@ -29,6 +31,8 @@ services:
       - 8281:8281
     networks:
       - backend
+    depends_on:
+      - post-db
 
   reddit:
     build:
@@ -71,6 +75,16 @@ services:
       - backend
     volumes:
       - 'postgresql_post:/var/lib/postgresql/data/pgdata'
+
+  web:
+    container_name: "web"
+    build:
+      context: .
+      dockerfile: ./deployments/docker/web/dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - backend
 
 networks:
   backend:

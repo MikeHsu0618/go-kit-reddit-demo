@@ -5,7 +5,7 @@ export const CreatePost = async(title, content, token, userId) => {
     try {
         const res = await axios({
             method: 'POST',
-            url: "http://localhost:8381/create-post",
+            url: `${import.meta.env.VITE_REDDIT_API_URL}/create-post`,
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -42,7 +42,7 @@ export const userLogin = async (username, password) => {
     try {
         const res = await axios({
             method: 'POST',
-            url: "http://localhost:8381/login",
+            url: `${import.meta.env.VITE_REDDIT_API_URL}/login`,
             data: {
                 username: username,
                 password: password
