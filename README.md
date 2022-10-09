@@ -1,7 +1,7 @@
 # go-kit-reddit-demo
 
 ## Demo
-<img src="./assets/demo.gif" width="100%"/>
+<img src="./assets/demo.gif" width="70%"/>
 
 
 ## 專案講解
