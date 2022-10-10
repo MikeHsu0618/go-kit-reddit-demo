@@ -122,6 +122,8 @@ git clone https://github.com/MikeHsu0618/go-kit-reddit-demo.git
 # 在本專案的根目錄下執行以下指令即可
 cp go-kit-reddit-demo
 docker compose up -d
+
+# 以瀏覽器打開 http://localhost:80 即可顯示前端頁面
 ```
 
 ### Restful API (Back-end)
