@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-server
+  labels:
+    app: post-server
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: post-server
+        version: v1
+    spec:
+      containers:
+        - name: post-server
+          image: mikehsu0618/reddit-post:latest
+          ports:
+            - containerPort: 8281
+              protocol: TCP
+              name: http
+          volumeMounts:
+            - mountPath: /app/configs # 使用 configmap 覆盖默认的配置文件
+              name: configs
+      volumes:
+        - name: configs
+          configMap:
+            name: reddit-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-server
+  labels:
+    app: post-server
+spec:
+  selector:
+    app: post-server
+  ports:
+    - port: 8281
+      targetPort: 8281
+      appProtocol: http
+      name: http
+#  type: LoadBalancer # TODO Test

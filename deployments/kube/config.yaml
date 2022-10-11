@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reddit-config
+data:
+  config.yaml: |-
+    reddit:
+     server:
+       name: "reddit-server"
+       host: "reddit-server"
+       http:
+         port: ":8381"
+    auth:
+      server:
+        name: 'auth-server'
+        host: 'auth-server'
+        http:
+          port: ':8081'
+    user:
+      db:
+        host: 'user-db'
+        port: '5432'
+        user: 'postgres'
+        password: 'postgres'
+        name: 'user'
+      server:
+        name: 'user-server'
+        host: 'user-server'
+        http:
+          port: ':8181'
+    post:
+      db:
+        host: 'post-db'
+        port: '5432'
+        user: 'postgres'
+        password: 'postgres'
+        name: 'post'
+      server:
+        name: 'post-server'
+        host: 'post-server'
+        http:
+          port: ':8281'
+    jwt:
+      secret: 'secret'
+      expires: 36000

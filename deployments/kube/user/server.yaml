@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-server
+  labels:
+    app: user-server
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: user-server
+        version: v1
+    spec:
+      containers:
+        - name: user-server
+          image: mikehsu0618/reddit-user:latest
+          ports:
+            - containerPort: 8181
+              protocol: TCP
+              name: http
+          volumeMounts:
+            - mountPath: /app/configs # 使用 configmap 覆盖默认的配置文件
+              name: configs
+      volumes:
+        - name: configs
+          configMap:
+            name: reddit-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-server
+  labels:
+    app: user-server
+spec:
+  selector:
+    app: user-server
+  ports:
+    - port: 8181
+      targetPort: 8181
+      appProtocol: http
+      name: http
