@@ -3,7 +3,6 @@ package endpoint
 import (
 	"context"
 	endpoint "github.com/go-kit/kit/endpoint"
-	"github.com/gookit/validate"
 	"go-kit-reddit-demo/internal/post/entity"
 	"go-kit-reddit-demo/internal/reddit/service"
 	user "go-kit-reddit-demo/internal/user/entity"
@@ -23,10 +22,6 @@ type LoginResponse struct {
 func MakeLoginEndpoint(s service.RedditService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(LoginRequest)
-		v := validate.Struct(request)
-		if !v.Validate() {
-			return nil, v.Errors
-		}
 		user, token, err := s.Login(ctx, req.Username, req.Password)
 		return LoginResponse{
 			User:  user,
@@ -54,10 +49,6 @@ type CreatePostResponse struct {
 func MakeCreatePostEndpoint(s service.RedditService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreatePostRequest)
-		v := validate.Struct(req)
-		if !v.Validate() {
-			return nil, v.Errors
-		}
 		post, err := s.CreatePost(ctx, req.Title, req.Content, req.UserId)
 		return CreatePostResponse{
 			Err:  err,
@@ -143,10 +134,6 @@ type RegisterResponse struct {
 func MakeRegisterEndpoint(s service.RedditService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(RegisterRequest)
-		v := validate.Struct(req)
-		if !v.Validate() {
-			return nil, v.Errors
-		}
 		user, token, err := s.Register(ctx, req.Username, req.Password)
 		return RegisterResponse{
 			Err:   err,

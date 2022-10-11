@@ -103,7 +103,7 @@ func getEndpointMiddleware(logger log.Logger) (mw map[string][]endpoint1.Middlew
 	}, []string{"method", "success"})
 	addDefaultEndpointMiddleware(logger, duration, mw)
 	// Add you endpoint middleware here
-
+	addEndpointMiddlewareToAllMethods(mw, endpoint.ValidationMiddleware())
 	return
 }
 

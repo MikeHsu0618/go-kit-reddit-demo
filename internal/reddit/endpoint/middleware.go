@@ -3,6 +3,7 @@ package endpoint
 import (
 	"context"
 	"fmt"
+	"github.com/gookit/validate"
 	"time"
 
 	endpoint "github.com/go-kit/kit/endpoint"
@@ -33,6 +34,19 @@ func LoggingMiddleware(logger log.Logger) endpoint.Middleware {
 			defer func(begin time.Time) {
 				logger.Log("transport_error", err, "took", time.Since(begin))
 			}(time.Now())
+			return next(ctx, request)
+		}
+	}
+}
+
+// ValidationMiddleware validate all request parameters before services
+func ValidationMiddleware() endpoint.Middleware {
+	return func(next endpoint.Endpoint) endpoint.Endpoint {
+		return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+			v := validate.Struct(request)
+			if !v.Validate() {
+				return nil, v.Errors
+			}
 			return next(ctx, request)
 		}
 	}
