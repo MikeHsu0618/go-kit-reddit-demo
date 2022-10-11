@@ -28,26 +28,13 @@ flowchart TD
 ```yaml
 ├── cmd
 │   ├── auth
-│   │   ├── main.go
-│   │   └── service
 │   ├── post
-│   │   ├── main.go
-│   │   └── service
 │   ├── reddit
-│   │   ├── main.go
-│   │   └── service
 │   └── user
-│       ├── main.go
-│       └── service
 ├── configs
 │   └── config.yaml
 ├── deployments
 │   ├── docker
-│   │   ├── auth
-│   │   ├── post
-│   │   ├── reddit
-│   │   ├── user
-│   │   └── web
 │   └── kube
 ├── docker-compose.yml
 ├── go.mod
@@ -84,11 +71,7 @@ flowchart TD
 ├── makefile
 ├── migrations
 │   ├── post
-│   │   ├── 000001_create_posts_table.down.sql
-│   │   └── 000001_create_posts_table.up.sql
 │   └── user
-│       ├── 000001_create_users_table.down.sql
-│       └── 000001_create_users_table.up.sql
 └── web
     ├── index.html
     ├── nginx
