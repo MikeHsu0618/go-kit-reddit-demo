@@ -11,6 +11,7 @@ import (
 	mux "github.com/gorilla/mux"
 )
 
+// makeLoginHandler
 func makeLoginHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/login").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.LoginEndpoint, decodeLoginRequest, encodeLoginResponse, options...)))
 }
@@ -31,6 +32,7 @@ func encodeLoginResponse(ctx context.Context, w http1.ResponseWriter, response i
 	return
 }
 
+// makeCreatePostHandler
 func makeCreatePostHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/create-post").Handler(
 		handlers.CORS(
@@ -58,6 +60,7 @@ func encodeCreatePostResponse(ctx context.Context, w http1.ResponseWriter, respo
 	return
 }
 
+// makeListPostHandler
 func makeListPostHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/list-post").Handler(handlers.CORS(handlers.AllowedMethods([]string{"GET"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.ListPostEndpoint, decodeListPostRequest, encodeListPostResponse, options...)))
 }
@@ -76,6 +79,7 @@ func encodeListPostResponse(ctx context.Context, w http1.ResponseWriter, respons
 	return
 }
 
+// makeRegisterHandler
 func makeRegisterHandler(m *mux.Router, endpoints endpoint2.Endpoints, options []http.ServerOption) {
 	m.Methods("POST").Path("/register").Handler(handlers.CORS(handlers.AllowedMethods([]string{"POST"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.RegisterEndpoint, decodeRegisterRequest, encodeRegisterResponse, options...)))
 }

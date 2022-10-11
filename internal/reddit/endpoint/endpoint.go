@@ -8,16 +8,7 @@ import (
 	user "go-kit-reddit-demo/internal/user/entity"
 )
 
-type LoginRequest struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required"`
-}
-
-type LoginResponse struct {
-	User  *user.User `json:"user"`
-	Token string     `json:"token"`
-	Err   error      `json:"err"`
-}
+// server
 
 func MakeLoginEndpoint(s service.RedditService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
@@ -31,21 +22,6 @@ func MakeLoginEndpoint(s service.RedditService) endpoint.Endpoint {
 	}
 }
 
-func (r LoginResponse) Failed() error {
-	return r.Err
-}
-
-type CreatePostRequest struct {
-	Title   string `json:"title" validate:"required"`
-	Content string `json:"content" validate:"required"`
-	UserId  uint64 `json:"user_id" validate:"required"`
-}
-
-type CreatePostResponse struct {
-	Post *entity.Post `json:"post"`
-	Err  error        `json:"err"`
-}
-
 func MakeCreatePostEndpoint(s service.RedditService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(CreatePostRequest)
@@ -55,17 +31,6 @@ func MakeCreatePostEndpoint(s service.RedditService) endpoint.Endpoint {
 			Post: post,
 		}, nil
 	}
-}
-
-func (r CreatePostResponse) Failed() error {
-	return r.Err
-}
-
-type ListPostRequest struct{}
-
-type ListPostResponse struct {
-	Posts []*entity.Post `json:"posts"`
-	Err   error          `json:"err"`
 }
 
 func MakeListPostEndpoint(s service.RedditService) endpoint.Endpoint {
@@ -78,13 +43,19 @@ func MakeListPostEndpoint(s service.RedditService) endpoint.Endpoint {
 	}
 }
 
-func (r ListPostResponse) Failed() error {
-	return r.Err
+func MakeRegisterEndpoint(s service.RedditService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(RegisterRequest)
+		user, token, err := s.Register(ctx, req.Username, req.Password)
+		return RegisterResponse{
+			Err:   err,
+			Token: token,
+			User:  user,
+		}, nil
+	}
 }
 
-type Failure interface {
-	Failed() error
-}
+// client
 
 func (e Endpoints) Login(ctx context.Context, username string, password string) (token string, err error) {
 	request := LoginRequest{
@@ -118,33 +89,6 @@ func (e Endpoints) ListPost(ctx context.Context, userId uint64) (posts []*entity
 		return
 	}
 	return response.(ListPostResponse).Posts, response.(ListPostResponse).Err
-}
-
-type RegisterRequest struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required"`
-}
-
-type RegisterResponse struct {
-	User  *user.User `json:"user"`
-	Token string     `json:"token"`
-	Err   error      `json:"err"`
-}
-
-func MakeRegisterEndpoint(s service.RedditService) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(RegisterRequest)
-		user, token, err := s.Register(ctx, req.Username, req.Password)
-		return RegisterResponse{
-			Err:   err,
-			Token: token,
-			User:  user,
-		}, nil
-	}
-}
-
-func (r RegisterResponse) Failed() error {
-	return r.Err
 }
 
 func (e Endpoints) Register(ctx context.Context, username string, password string) (user *user.User, token string, err error) {
